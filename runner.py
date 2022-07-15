@@ -2,11 +2,8 @@ import pyautogui
 import osascript
 import serial
 
-mode = "video"
 
 currentVolume = 100
-
-osascript.osascript("set volume output volume 100")
 
 serialPort = serial.Serial(port = "/dev/cu.usbserial-1410", baudrate=9600)
 
@@ -49,13 +46,31 @@ def handleVolume (direction):
     print(currentVolume)
     osascript.osascript("set volume output volume %s" % currentVolume)
 
+handlers = [handleScroll, handleMoveDesktop, handleVolume, handleVideo]
+
+handlerIndex = 0
+
+def nextHandler():
+    global handlerIndex
+    if (handlerIndex == (len(handlers) - 1)):
+       handlerIndex = 0
+    else:
+       handlerIndex += 1
+    print(handlers[handlerIndex])
+
 while(1):
     if(serialPort.in_waiting > 0):
+
+        # Get serial input
         serialString = serialPort.readline()
-        # print(serialString)
         direction = serialString.decode('Ascii').strip()
+
         print(direction)
-        handleVolume(direction)
-        # handleMoveDesktop(direction)
-        # handleScroll(direction)
-        # handleVideo(direction)
+
+        if (direction == "SW"):
+            nextHandler()
+        
+        # handle CCW and CW
+        currentHandler = handlers[handlerIndex]
+        currentHandler(direction)
+

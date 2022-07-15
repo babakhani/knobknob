@@ -40,7 +40,6 @@ void loop () {
 	}
 	lastStateCLK = currentStateCLK;
 
-
 	int btnState = digitalRead(SW);
 	//If we detect LOW signal, button is pressed
 	if (btnState == LOW) {
@@ -48,7 +47,7 @@ void loop () {
 		//button has been pressed, released and pressed again
 		if (millis() - lastButtonPress > 50) {
 		    digitalWrite(LEDPIN, LOW);
-			Serial.println("Button pressed!");
+			Serial.println("SW");
 		}
 
 		// Remember last button press event
